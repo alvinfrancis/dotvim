@@ -1,0 +1,55 @@
+#! header
+snippet #!! "Shebang header for python scripts" b
+#!/usr/bin/${1:python -tt}
+# encoding: utf-8
+endsnippet
+
+snippet cjmain "code jam main" b
+def main():
+    """Read in the specified file and print out the expected output."""
+    if len(sys.argv) >= 2:
+        filename = sys.argv[1]
+    else:
+        print 'usage: ./`!v expand("%:t")` file'
+        sys.exit(1)
+    with open(filename, 'rU') as file_handle:
+        ${0:pass}
+endsnippet
+
+snippet cjhandlecase "code jam handle case function" b
+def handle_case(case, lines, **args):
+    """Return a string containing the expected output given a single case.
+
+    Handles the case supplied through the given case and lines and returns a
+    string containing the expected output of the given input. The **args may be
+    used to contain any additional input variables that may have been
+    preprocessed.
+
+    Args:
+        case: Number specifying the current case number
+        lines: List of input lines relevant to the case
+        **args: Additional arguments (e.g. preprocessed input)
+
+    Returns:
+        A string of the expected output of the corresponding test case.
+    """
+
+    ${0:result = ''
+	return 'Case #%d: %s' % (case, result)
+}
+endsnippet
+
+snippet clsmemoize "memoize class decorator" b
+class memoize:
+    """Decorator class for memoization of a recursive function"""
+    def __init__(self, function):
+        self.function = function
+        self.memoized = {}
+
+    def __call__(self, *args):
+        try:
+            return self.memoized[args]
+        except KeyError:
+            self.memoized[args] = self.function(*args)
+            return self.memoized[args]
+endsnippet
