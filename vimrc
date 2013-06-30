@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-06-30 22:56:20
+" Last modified: 2013-06-30 22:58:38
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -1174,7 +1174,6 @@ let g:multi_cursor_quit_key='<C-j>'
 
 " }}} ---------------------------------
 " Unite {{{2---------------------------
-
 " Use the fuzzy matcher for everything
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file,file/new,buffer,file_rec,command',
@@ -1184,7 +1183,7 @@ call unite#custom#source('file,file/new,buffer,file_rec,command',
 call unite#filters#sorter_default#use(['sorter_rank'])
 
 " Set up some custom ignores
-call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
+call unite#custom_source('file_rec,file_mru,file,buffer,grep',
       \ 'ignore_pattern', join([
       \ '\.git/',
       \ 'git5/.*/review/',
@@ -1195,9 +1194,11 @@ call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
 nnoremap [unite] <nop>
 nmap \ [unite]
 
+nnoremap <silent> [unite]\ :<C-u>UniteResume<CR>
+
 " General fuzzy search
 nnoremap <silent> [unite]<space> :<C-u>Unite
-      \ -buffer-name=files buffer file_mru bookmark file_rec/async<CR>
+      \ -buffer-name=all buffer file_mru bookmark<CR>
 
 " Quick registers
 nnoremap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
@@ -1222,10 +1223,10 @@ nnoremap <silent> [unite]d
       \ :<C-u>Unite -buffer-name=change-cwd -default-action=lcd directory_mru<CR>
 
 " Quick file search
-nnoremap <silent> [unite]f :<C-u>Unite -buffer-name=files file_rec/async file/new<CR>
+nnoremap <silent> [unite]f :<C-u>Unite -buffer-name=files file_rec<CR>
 
 " Quick grep from cwd
-nnoremap <silent> [unite]g :<C-u>Unite -buffer-name=grep grep:.<CR>
+nnoremap <silent> [unite]g :<C-u>UniteWithInput -buffer-name=grep grep:.<CR>
 
 " Quick help
 nnoremap <silent> [unite]h :<C-u>Unite -buffer-name=help help<CR>
@@ -1243,7 +1244,10 @@ nnoremap <silent> [unite]n :<C-u>Unite -buffer-name=find find:.<CR>
 nnoremap <silent> [unite]c :<C-u>Unite -buffer-name=commands command<CR>
 
 " Quick bookmarks
-nnoremap <silent> [unite]b :<C-u>Unite -buffer-name=bookmarks bookmark<CR>
+" nnoremap <silent> [unite]b :<C-u>Unite -buffer-name=bookmarks bookmark<CR>
+
+" Quick buffers
+nnoremap <silent> [unite]b :<C-u>Unite -buffer-name=buffers buffer<CR>
 
 " Fuzzy search from current buffer
 " nnoremap <silent> [unite]b :<C-u>UniteWithBufferDir
@@ -1269,6 +1273,8 @@ function! s:unite_settings() " {{{
     nnoremap <silent><buffer><expr> <C-s> unite#do_action('split')
     inoremap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
     nnoremap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+    inoremap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+    nnoremap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
   
     let unite = unite#get_current_unite()
     if unite.buffer_name =~# '^search'
@@ -1320,7 +1326,7 @@ if executable('ack-grep')
     let g:unite_source_grep_recursive_opt = ''
 elseif executable('ack')
     let g:unite_source_grep_command = 'ack'
-    let g:unite_source_grep_default_opts = '--no-heading --no-color -a -w'
+    let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
     let g:unite_source_grep_recursive_opt = ''
 endif
 
