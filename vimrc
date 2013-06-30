@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-06-30 22:54:22
+" Last modified: 2013-06-30 22:56:20
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -448,6 +448,16 @@ function! LastModified() " {{{
   endif
 endfun " }}}
 
+" Toggle solarized background
+function! ToggleSolarized()
+    if !exists("g:solarized_style") || (g:solarized_style=="light")
+        let g:solarized_style="dark"
+        colorscheme solarized
+    else
+        let g:solarized_style="light"
+        colorscheme solarized
+    endif
+endfunction
 
 " }}} ========================================================================
 " Text Objects {{{1-----------------------------------------------------------
