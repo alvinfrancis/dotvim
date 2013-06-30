@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-06-30 22:52:56
+" Last modified: 2013-06-30 22:54:22
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -1041,7 +1041,7 @@ endfunction " }}}
         autocmd!
         autocmd VimEnter * call s:Startup()
     augroup END
-endfunction
+" }}}
 
 
 " }}} ========================================================================
