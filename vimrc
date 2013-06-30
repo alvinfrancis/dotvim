@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-06-30 23:12:18
+" Last modified: 2013-06-30 23:16:53
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -126,6 +126,9 @@ set mouse=a
 set cmdheight=2
 set number
 set notimeout ttimeout ttimeoutlen=200
+
+" Number of terminal colors
+set t_Co=256
 
 " Tab preferences
 " Expand tab to spaces, set shiftwidth (indent length) to 4, set
