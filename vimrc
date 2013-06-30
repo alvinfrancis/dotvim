@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-06-30 22:58:38
+" Last modified: 2013-06-30 23:12:18
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -62,8 +62,10 @@ Bundle 'Shougo/vimshell.vim'
 
 Bundle 'dbext.vim'
 Bundle 'Conque-Shell'
-Bundle 'taglist.vim'
-Bundle 'Tagbar'
+if executable('ctags')
+    Bundle 'taglist.vim'
+    Bundle 'Tagbar'
+endif
 Bundle 'The-NERD-tree'
 Bundle 'Align'
 Bundle 'scratch.vim'
@@ -149,7 +151,7 @@ set foldlevelstart=2
 " Don't auto-indent comments.
 set fo-=c
 
-colorscheme wombat
+colorscheme molokai
 
 
 " }}} ========================================================================
