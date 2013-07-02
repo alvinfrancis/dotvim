@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-06-30 23:16:53
+" Last modified: 2013-07-02 23:04:41
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -59,6 +59,8 @@ Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/neocomplcache.vim'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
+
+Bundle 'gitv'
 
 Bundle 'dbext.vim'
 Bundle 'Conque-Shell'
@@ -440,7 +442,7 @@ function! CloseNoNameBuffers() " {{{
 endfunction " }}}
 
 " If buffer modified, update any 'Last modified: ' in the first 20 lines.
-" 'Last modified: ' can have up to 10 characters before (they are retained).
+" 'Last modified: 2013-07-02 23:04:41
 " Restores cursor and window position using save_cursor variable.
 function! LastModified() " {{{
   if &modified
