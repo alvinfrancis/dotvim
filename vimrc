@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-03 20:12:17
+" Last modified: 2013-07-03 20:14:02
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -576,6 +576,12 @@ augroup END
 augroup ft_vb
     autocmd!
     autocmd FileType vb setlocal syntax=vbnet foldmethod=syntax
+augroup END
+" }}} ---------------------------------
+" vimwiki {{{2------------------------
+augroup ft_wiki
+    autocmd!
+    autocmd FileType vimwiki setlocal textwidth=80
 augroup END
 " }}} ---------------------------------
 
