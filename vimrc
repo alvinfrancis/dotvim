@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-03 20:09:23
+" Last modified: 2013-07-03 20:12:17
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -441,8 +441,8 @@ function! CloseNoNameBuffers() " {{{
     endwhile
 endfunction " }}}
 
-" If buffer modified, update any 'Last modified: ' in the first 20 lines.
-" 'Last modified: ' can have up to 10 characters before (they are retained).
+" If buffer modified, update any 'Last modified:' in the first 10 lines.
+" 'Last modified:' can have up to 10 characters before (they are retained).
 " Restores cursor and window position using save_cursor variable.
 function! LastModified() " {{{
   if &modified
