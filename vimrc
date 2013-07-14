@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-15 00:13:56
+" Last modified: 2013-07-15 00:21:18
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -55,51 +55,46 @@ endif
 
 " Use Vundle to manage plugins
 
-" Experimental {{{2
-Bundle 'vbnet.vim'
-
-Bundle 'Shougo/unite.vim'
+Bundle 'Align'
+Bundle 'Conque-Shell'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'Lokaltog/vim-powerline'
 Bundle 'Shougo/neocomplcache.vim'
+Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
-Bundle 'gitv'
-
-Bundle 'michaeljsmith/vim-indent-object'
-Bundle 'coderifous/textobj-word-column.vim'
-
-if executable('curl')
-    Bundle 'mattn/webapi-vim'
-    Bundle 'mattn/gist-vim'
-endif
-" }}}
-
-Bundle 'dbext.vim'
-Bundle 'Conque-Shell'
-if executable('ctags')
-    Bundle 'taglist.vim'
-    Bundle 'Tagbar'
-endif
 Bundle 'The-NERD-tree'
-Bundle 'Align'
-Bundle 'scratch.vim'
 Bundle 'ack.vim'
+Bundle 'coderifous/textobj-word-column.vim'
+Bundle 'dbext.vim'
+Bundle 'gitv'
 Bundle 'gmarik/vundle'
-Bundle 'mattn/calendar-vim'
 Bundle 'kien/ctrlp.vim'
-Bundle 'vimwiki/vimwiki'
+Bundle 'mattn/calendar-vim'
+Bundle 'michaeljsmith/vim-indent-object'
+Bundle 'scratch.vim'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'tpope/vim-abolish'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
-Bundle 'Lokaltog/vim-easymotion'
+Bundle 'vimwiki/vimwiki'
+
 if has('python')
     Bundle 'VOoM'
     Bundle 'klen/python-mode'
     Bundle 'sjl/gundo.vim'
     Bundle 'SirVer/ultisnips'
 endif
-Bundle 'tpope/vim-fugitive'
-Bundle 'Lokaltog/vim-powerline'
-Bundle 'tpope/vim-abolish'
-Bundle 'tpope/vim-repeat'
-Bundle 'terryma/vim-multiple-cursors'
+if executable('ctags')
+    Bundle 'taglist.vim'
+    Bundle 'Tagbar'
+endif
+if executable('curl')
+    Bundle 'mattn/webapi-vim'
+    Bundle 'mattn/gist-vim'
+endif
+
 
 " }}} ========================================================================
 " Basic stuff {{{1------------------------------------------------------------
