@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-03 20:14:02
+" Last modified: 2013-07-14 11:49:39
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -55,12 +55,20 @@ endif
 
 " Use Vundle to manage plugins
 
+" Experimental {{{2
+Bundle 'vbnet.vim'
+
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/neocomplcache.vim'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
-
 Bundle 'gitv'
+
+if executable('curl')
+    Bundle 'mattn/webapi-vim'
+    Bundle 'mattn/gist-vim'
+endif
+" }}}
 
 Bundle 'dbext.vim'
 Bundle 'Conque-Shell'
