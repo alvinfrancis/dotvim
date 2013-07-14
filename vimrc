@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-15 00:00:47
+" Last modified: 2013-07-15 00:02:03
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -511,6 +511,25 @@ function! ToggleSolarized()
         colorscheme solarized
     endif
 endfunction
+
+" format SQL using sqlformat.org
+function! SQLFormat() " {{{
+'<,'>python << EOF
+import vim
+import urllib2, urllib, json
+sql = ' '.join(vim.current.range)
+params = {'sql': sql,
+          'n_indents': 4,
+          'keyword_case': 'upper',
+          'reindent': 1}
+response = urllib2.urlopen('http://sqlformat.org/api/v1/format',
+                           data=urllib.urlencode(params))
+data = json.loads(response.read())
+lines = str.splitlines(str(data['result']))
+vim.current.range.append([line for line in lines if line != ''])
+vim.command('\'<,\'>d')
+EOF
+endfunction " }}}
 
 " }}} ========================================================================
 " Text Objects {{{1-----------------------------------------------------------
