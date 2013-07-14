@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-15 00:21:18
+" Last modified: 2013-07-15 00:26:26
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -278,8 +278,7 @@ vnoremap <silent> <leader>h4 :<C-u>call HiInterestingWord(4)<cr>
 vnoremap <silent> <leader>h5 :<C-u>call HiInterestingWord(5)<cr>
 vnoremap <silent> <leader>h6 :<C-u>call HiInterestingWord(6)<cr>
 
-" Interesting word highlight groups {{{
-function! ResetInterestingColors()
+function! ResetInterestingColors() " {{{
     hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
     hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
     hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
@@ -308,6 +307,7 @@ function! MatchDeleteInterestingWords() " {{{
     endfor
 endfunction " }}}
 
+call ResetInterestingColors()
 augroup InterestingWord
     autocmd ColorScheme * call ResetInterestingColors()
 augroup END
