@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-14 11:49:39
+" Last modified: 2013-07-15 00:00:47
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -270,20 +270,58 @@ vnoremap <S-Space> 5k
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-" Highlight word under cursor using highlighting groups (seems like overkill
-" for now). Needs to create the highlight groups first.
+" Highlight selected text under cursor using highlighting groups {{{
 " nnoremap <silent> <leader>hh :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
-" nnoremap <silent> <leader>h1 :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
-" nnoremap <silent> <leader>h2 :execute '2match InterestingWord2 /\<<c-r><c-w>\>/'<cr>
-" nnoremap <silent> <leader>h3 :execute '3match InterestingWord3 /\<<c-r><c-w>\>/'<cr>
+nnoremap <silent> <leader>hx :<C-u>call MatchDeleteInterestingWords()<cr>
+vnoremap <silent> <leader>h1 :<C-u>call HiInterestingWord(1)<cr>
+vnoremap <silent> <leader>h2 :<C-u>call HiInterestingWord(2)<cr>
+vnoremap <silent> <leader>h3 :<C-u>call HiInterestingWord(3)<cr>
+vnoremap <silent> <leader>h4 :<C-u>call HiInterestingWord(4)<cr>
+vnoremap <silent> <leader>h5 :<C-u>call HiInterestingWord(5)<cr>
+vnoremap <silent> <leader>h6 :<C-u>call HiInterestingWord(6)<cr>
+
+" Interesting word highlight groups {{{
+function! ResetInterestingColors()
+    hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
+    hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
+    hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
+    hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
+    hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
+    hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+endfunction
+" }}}
+function! HiInterestingWord(n) " {{{
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let matchid = 86750 + a:n
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(matchid)
+    " Use VSetSearch code
+    let temp = @@
+    norm! gvy
+    let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+
+    call matchadd("InterestingWord" . a:n, @/, 1, matchid)
+    let @@ = temp
+endfunction " }}}
+function! MatchDeleteInterestingWords() " {{{
+    for offset in [1,2,3,4,5,6]
+        let matchid = 86750 + offset
+        silent! call matchdelete(matchid)
+    endfor
+endfunction " }}}
+
+augroup InterestingWord
+    autocmd ColorScheme * call ResetInterestingColors()
+augroup END
+" }}}
 
 " Visual Mode */# from Scrooloose
 " Pressing */# in Visual mode will search for the visually selected text
 function! s:VSetSearch() " {{{
-  let temp = @@
-  norm! gvy
-  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
-  let @@ = temp
+    let temp = @@
+    norm! gvy
+    let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+    let @@ = temp
 endfunction " }}}
 vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
 vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
@@ -1356,6 +1394,11 @@ endif
 
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_prompt = $USER.'$ '
+
+" }}} ---------------------------------
+" neocomplcache {{{2------------------------
+
+nnoremap <F6> :NeoComplCacheEnable<CR>
 
 " }}} ---------------------------------
 
