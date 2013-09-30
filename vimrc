@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-07-15 00:26:26
+" Last modified: 2013-09-25 14:00:34
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -719,16 +719,30 @@ augroup ft_snippets
     autocmd BufReadPost *.snippets set bufhidden=delete
 augroup END
 " }}} ---------------------------------
-" vbs {{{2------------------------
+" vbs {{{2-----------------------------
 augroup ft_vb
     autocmd!
     autocmd FileType vb setlocal syntax=vbnet foldmethod=syntax
 augroup END
 " }}} ---------------------------------
-" vimwiki {{{2------------------------
+" vimwiki {{{2-------------------------
 augroup ft_wiki
     autocmd!
     autocmd FileType vimwiki setlocal textwidth=80
+augroup END
+" }}} ---------------------------------
+" ft_coffee {{{2-----------------------
+augroup ft_coffee
+    autocmd!
+    autocmd FileType coffee setlocal tabstop=2 shiftwidth=2 
+    autocmd FileType coffee nnoremap <buffer><F2> :CoffeeMake<CR>:redraw!<CR>
+augroup END
+" }}} ---------------------------------
+" ft_livescript {{{2-------------------
+augroup ft_livescript
+    autocmd!
+    autocmd FileType ls setlocal tabstop=2 shiftwidth=2
+    autocmd FileType ls nnoremap <buffer><F2> :LiveScriptMake<CR>:redraw!<CR>
 augroup END
 " }}} ---------------------------------
 
@@ -1245,7 +1259,7 @@ let g:vimwiki_ext2syntax = {}
 
 " let g:vimwiki_list = [ {'path': '~/work/', 'syntax': 'markdown', 'ext': '.md'}]
 " Set default wiki as default wiki
-let g:vimwiki_folding='syntax'
+let g:vimwiki_folding='expr'
 let g:vimwiki_fold_lists=1
 " Vimwiki Insert Mode table mappings conflict with UltiSnips
 let g:vimwiki_table_mappings=0
@@ -1253,14 +1267,20 @@ let g:vimwiki_table_mappings=0
 " }}} ---------------------------------
 " CtrlP {{{2---------------------------
 
-" Set working directory options
+" Set working directory options -- disable
 let g:ctrlp_working_path_mode = '0'
+
 " Do not clear cache on exit
 let g:ctrlp_clear_cache_on_exit = 0
+
+" Use Mixed
+let g:ctrlp_cmd = 'CtrlPMixed'
+
 " Mapping for CtrlPMRU
 nnoremap <leader><C-p> :CtrlPMRU<CR>
-" Mapping for CtrlPBuff
-nnoremap <leader><leader><C-p> :CtrlPBuffer<CR>
+
+" Mapping for CtrlPBufTagAll
+nnoremap <leader><leader><C-p> :CtrlPBufTagAll<CR>
 
 
 " }}} ---------------------------------
@@ -1305,8 +1325,12 @@ let g:pymode_syntax_all = 1
 let g:pymode_syntax_indent_errors = g:pymode_syntax_all
 let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
-" Don't autofold code
+" Autofold code
 let g:pymode_folding = 1
+
+" Completion
+" let g:pymode_rope_vim_completion = 1
+" let g:pymode_rope_extended_complete = 1
 
 " }}} ---------------------------------
 " TagBar and Taglist {{{2--------------
@@ -1321,6 +1345,7 @@ nnoremap <leader><C-[> :TlistToggle<CR>
 " UltiSnips {{{2-----------------------
 
 let g:UltiSnipsSnippetDirectories=["ultisnips","snippets"]
+let g:UltiSnipsSnippetsDir="$HOME/$VIMFILES/snippets"
 
 " }}} ---------------------------------
 " Gundo {{{2---------------------------
@@ -1330,12 +1355,12 @@ nnoremap <F5> :GundoToggle<CR>
 " }}} ---------------------------------
 " Multiple-Cursors {{{2----------------
 
-let g:multi_cursor_quit_key='<C-j>'
+let g:multi_cursor_quit_key='<C-g>'
 
 " }}} ---------------------------------
 " Unite {{{2---------------------------
 " Use the fuzzy matcher for everything
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file,file/new,buffer,file_rec,command',
 \ 'matchers', 'matcher_fuzzy')
 
@@ -1348,9 +1373,11 @@ call unite#custom_source('file_rec,file_mru,file,buffer,grep',
       \ '\.git/',
       \ 'git5/.*/review/',
       \ 'google/obj/',
+      \ 'target/',
+      \ '\.sass-cache/',
       \ ], '\|'))
 
-" Map space to the prefix for Unite
+" Map backslash to the prefix for Unite
 nnoremap [unite] <nop>
 nmap \ [unite]
 
@@ -1358,7 +1385,7 @@ nnoremap <silent> [unite]\ :<C-u>UniteResume<CR>
 
 " General fuzzy search
 nnoremap <silent> [unite]<space> :<C-u>Unite
-      \ -buffer-name=all buffer file_mru bookmark<CR>
+      \ -no-split -buffer-name=all buffer file_mru bookmark<CR>
 
 " Quick registers
 nnoremap <silent> [unite]r :<C-u>Unite -buffer-name=register register<CR>
@@ -1372,18 +1399,18 @@ nnoremap <silent> [unite]y :<C-u>Unite -buffer-name=yanks history/yank<CR>
 " Quick outline
 nnoremap <silent> [unite]o :<C-u>Unite -buffer-name=outline -vertical outline<CR>
 
-" Quick sessions (projects)
-nnoremap <silent> [unite]p :<C-u>Unite -buffer-name=sessions session<CR>
+" Quick process
+nnoremap <silent> [unite]p :<C-u>Unite -buffer-name=processes process<CR>
 
 " Quick snippet
 nnoremap <silent> [unite]s :<C-u>Unite -buffer-name=snippets snippet<CR>
 
 " Quickly switch lcd
 nnoremap <silent> [unite]d
-      \ :<C-u>Unite -buffer-name=change-cwd -default-action=lcd directory_mru<CR>
+      \ :<C-u>Unite -buffer-name=change-cwd -default-action=lcd -no-split directory directory_mru<CR>
 
 " Quick file search
-nnoremap <silent> [unite]f :<C-u>Unite -buffer-name=files file_rec<CR>
+nnoremap <silent> [unite]f :<C-u>Unite -buffer-name=files file_rec/async<CR>
 
 " Quick grep from cwd
 nnoremap <silent> [unite]g :<C-u>UniteWithInput -buffer-name=grep grep:.<CR>
@@ -1391,8 +1418,11 @@ nnoremap <silent> [unite]g :<C-u>UniteWithInput -buffer-name=grep grep:.<CR>
 " Quick help
 nnoremap <silent> [unite]h :<C-u>Unite -buffer-name=help help<CR>
 
+" Quick line
+nnoremap <silent> [unite]l :<C-u>Unite -buffer-name=search_file -no-split line<CR>
+
 " Quick line using the word under cursor
-nnoremap <silent> [unite]l :<C-u>UniteWithCursorWord -buffer-name=search_file line<CR>
+nnoremap <silent> [unite]L :<C-u>UniteWithCursorWord -buffer-name=search_file -no-split line<CR>
 
 " Quick MRU search
 nnoremap <silent> [unite]m :<C-u>Unite -buffer-name=mru file_mru<CR>
@@ -1403,11 +1433,11 @@ nnoremap <silent> [unite]n :<C-u>Unite -buffer-name=find find:.<CR>
 " Quick commands
 nnoremap <silent> [unite]c :<C-u>Unite -buffer-name=commands command<CR>
 
-" Quick bookmarks
-" nnoremap <silent> [unite]b :<C-u>Unite -buffer-name=bookmarks bookmark<CR>
+" Quick Changes
+nnoremap <silent> [unite]C :<C-u>Unite -buffer-name=changes change<CR>
 
 " Quick buffers
-nnoremap <silent> [unite]b :<C-u>Unite -buffer-name=buffers buffer<CR>
+nnoremap <silent> [unite]b :<C-u>Unite -buffer-name=buffers -no-split buffer<CR>
 
 " Fuzzy search from current buffer
 " nnoremap <silent> [unite]b :<C-u>UniteWithBufferDir
@@ -1426,7 +1456,6 @@ function! s:unite_settings() " {{{
 
     nmap <buffer> <ESC> <Plug>(unite_exit)
     imap <buffer> <ESC> <Plug>(unite_exit)
-    " imap <buffer> <c-j> <Plug>(unite_select_next_line)
     imap <buffer> <c-j> <Plug>(unite_select_next_line)
     imap <buffer> <c-k> <Plug>(unite_select_previous_line)
     inoremap <silent><buffer><expr> <C-s> unite#do_action('split')
@@ -1435,7 +1464,7 @@ function! s:unite_settings() " {{{
     nnoremap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
     inoremap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
     nnoremap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-  
+
     let unite = unite#get_current_unite()
     if unite.buffer_name =~# '^search'
         nnoremap <silent><buffer><expr> r     unite#do_action('replace')
@@ -1454,6 +1483,12 @@ function! s:unite_settings() " {{{
     if unite.buffer_name =~# '^search_file'
         imap <buffer> <C-_> <Plug>(unite_exit)
     endif
+
+    " if unite.buffer_name =~# '^buffer'
+    "     " map d to delete selected buffers
+    "     nnoremap <silent><buffer><expr>d unite#do_action('delete')
+    " endif
+
 endfunction " }}}
 
 " Start in insert mode
@@ -1486,7 +1521,7 @@ if executable('ack-grep')
     let g:unite_source_grep_recursive_opt = ''
 elseif executable('ack')
     let g:unite_source_grep_command = 'ack'
-    let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
+    let g:unite_source_grep_default_opts = '--no-heading --no-color -H -i'
     let g:unite_source_grep_recursive_opt = ''
 endif
 
@@ -1497,9 +1532,41 @@ let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 let g:vimshell_prompt = $USER.'$ '
 
 " }}} ---------------------------------
-" neocomplcache {{{2------------------------
+" neocomplcache {{{2-------------------
 
 nnoremap <F6> :NeoComplCacheEnable<CR>
+
+" }}} ---------------------------------
+" Gist {{{2----------------------------
+
+let g:gist_clip_command = 'pbcopy'
+
+" }}} ---------------------------------
+" slimux {{{2--------------------------
+
+vnoremap <C-c><C-c> :SlimuxREPLSendSelection<CR>
+nnoremap <C-c><C-c> vip:SlimuxREPLSendSelection<CR>
+nnoremap <C-c><C-x> :SlimuxShellLast<CR>
+
+" }}} ---------------------------------
+" vim-slime {{{2-----------------------
+
+let g:slime_target = "tmux"
+
+" }}} ---------------------------------
+" paredit {{{2-------------------------
+
+let g:paredit_electric_return = 0
+
+" }}} ---------------------------------
+" vim-coffee-script {{{2---------------
+
+let g:coffee_make_options = '--bare'
+
+" }}} ---------------------------------
+" vim-livescript {{{2------------------
+
+let g:livescript_make_options = '--bare'
 
 " }}} ---------------------------------
 
