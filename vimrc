@@ -251,6 +251,11 @@ nnoremap <leader>es :set buftype=nofile<CR>:set bufhidden=hide<CR>:setlocal nosw
 " Ex mode is used very rarely enough so as not to warrant its own key
 nnoremap Q K
 
+" Minimize chording 
+nnoremap ; :
+nnoremap : ;
+vnoremap ; :
+vnoremap : ;
 
 " }}} ========================================================================
 " Movement {{{1---------------------------------------------------------------
@@ -269,16 +274,16 @@ nnoremap gk k
 " inoremap <C-l> <Right>
 
 " Scroll Up and Down in Normal/Visual Mode
-nnoremap <C-j> <C-d>
-nnoremap <C-k> <C-u>
-vnoremap <C-j> <C-d>
-vnoremap <C-k> <C-u>
+" nnoremap <C-j> <C-d>
+" nnoremap <C-k> <C-u>
+" vnoremap <C-j> <C-d>
+" vnoremap <C-k> <C-u>
 
-" Use space to jump 5 lines at a time in Normal/Visual Mode
+" Use Mutt bindings for jumping
 nnoremap <Space> 5j
-nnoremap <S-Space> 5k
+nnoremap - 5k
 vnoremap <Space> 5j
-vnoremap <S-Space> 5k
+vnoremap - 5k
 
 
 " }}} ========================================================================
@@ -349,7 +354,8 @@ nnoremap <leader>hl /.*.*<Left><Left>
 
 " Don't move on '*'. By default, '*' moves to the next instance of the word
 " under the cursor.
-nnoremap * *<c-o>
+nnoremap * *<C-o>
+nnoremap cg* *<C-o>cgn
 
 " Toggle highlighting. Note: This does not clear the search register. Also,
 " search highlighting will remain toggled off or on until it is toggled again.
@@ -359,11 +365,14 @@ nnoremap <C-S-Space> :set hlsearch!<CR>
 " }}} ========================================================================
 " Windows, Tabs, and Buffers {{{1---------------------------------------------
 
-" Switch windows using Shift+HJKL
-nnoremap <S-j> <C-w>j
-nnoremap <S-k> <C-w>k
-nnoremap <S-h> <C-w>h
-nnoremap <S-l> <C-w>l
+" Switch windows using Ctrl+HJKL
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+" Tmux-style window zooming
+nnoremap <C-w>z <C-w>\|<C-w>_
 
 " Tab switching. Use leader for future proofing
 nnoremap <leader>ll gt
@@ -371,15 +380,15 @@ nnoremap <leader>hh gT
 nnoremap <leader>nn :tabnew<CR>
 nnoremap <leader>tc :tabclose<CR>
 
-" Switch tabs using Ctrl+HL
-nnoremap <C-h> gT
-nnoremap <C-l> gt
+" Switch tabs using Shift+HL
+nnoremap <S-h> gT
+nnoremap <S-l> gt
 
 " Buffer stuff (TODO: Look into using buffer switching more)
 " nnoremap <F1> :bN<CR>
 " nnoremap <F2> :bn<CR>
 nnoremap <F9> :call CloseHiddenBuffers()<CR>
-nnoremap <leader>gb :ls<CR>:b
+nnoremap <leader>gb :ls<CR>:b 
 nnoremap <Left> :bN<CR>
 nnoremap <Right> :bn<CR>
 
