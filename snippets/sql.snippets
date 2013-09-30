@@ -110,6 +110,9 @@ BEGIN
        ${0:--code}
        FETCH NEXT FROM $1 INTO $2
 END  
+
+CLOSE $1
+DEALLOCATE $1
 endsnippet
 
 snippet --vim "vim options"
