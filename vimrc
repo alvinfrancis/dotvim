@@ -212,11 +212,19 @@ noremap Y y$
 " jj to Escape Insert mode
 inoremap jj <Esc>
 
+" Emacs style insert mode mappings
+inoremap <C-a> <C-o>I
+inoremap <C-e> <C-o>A
+inoremap <C-f> <C-o>l
+inoremap <C-b> <C-o>h
+inoremap <C-k> <C-o>D
+" inoremap f <C-o>w
+
 " Split lines at cursor (TODO: Look into an easier mapping for this)
 nnoremap <C-S-CR> i<CR><Esc>
 
 " Create new line below or above
-nnoremap <C-CR> o<Esc>
+nnoremap ,<CR> o<Esc>
 nnoremap <S-CR> O<Esc>
 
 " Paste from clipboard
