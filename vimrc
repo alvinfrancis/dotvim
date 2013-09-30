@@ -294,14 +294,20 @@ nnoremap n nzzzv
 nnoremap N Nzzzv
 
 " Highlight selected text under cursor using highlighting groups {{{
-" nnoremap <silent> <leader>hh :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
 nnoremap <silent> <leader>hx :<C-u>call MatchDeleteInterestingWords()<cr>
-vnoremap <silent> <leader>h1 :<C-u>call HiInterestingWord(1)<cr>
-vnoremap <silent> <leader>h2 :<C-u>call HiInterestingWord(2)<cr>
-vnoremap <silent> <leader>h3 :<C-u>call HiInterestingWord(3)<cr>
-vnoremap <silent> <leader>h4 :<C-u>call HiInterestingWord(4)<cr>
-vnoremap <silent> <leader>h5 :<C-u>call HiInterestingWord(5)<cr>
-vnoremap <silent> <leader>h6 :<C-u>call HiInterestingWord(6)<cr>
+vnoremap <silent> <leader>h1 :<C-u>call VHiInterestingWord(1)<cr>
+vnoremap <silent> <leader>h2 :<C-u>call VHiInterestingWord(2)<cr>
+vnoremap <silent> <leader>h3 :<C-u>call VHiInterestingWord(3)<cr>
+vnoremap <silent> <leader>h4 :<C-u>call VHiInterestingWord(4)<cr>
+vnoremap <silent> <leader>h5 :<C-u>call VHiInterestingWord(5)<cr>
+vnoremap <silent> <leader>h6 :<C-u>call VHiInterestingWord(6)<cr>
+nnoremap <silent> <leader>hh viw:<C-u>call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>h1 viw:<C-u>call HiInterestingWord(1)<cr>
+nnoremap <silent> <leader>h2 viw:<C-u>call HiInterestingWord(2)<cr>
+nnoremap <silent> <leader>h3 viw:<C-u>call HiInterestingWord(3)<cr>
+nnoremap <silent> <leader>h4 viw:<C-u>call HiInterestingWord(4)<cr>
+nnoremap <silent> <leader>h5 viw:<C-u>call HiInterestingWord(5)<cr>
+nnoremap <silent> <leader>h6 viw:<C-u>call HiInterestingWord(6)<cr>
 
 function! ResetInterestingColors() " {{{
     hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
@@ -312,6 +318,19 @@ function! ResetInterestingColors() " {{{
     hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
 endfunction
 " }}}
+function! VHiInterestingWord(n) " {{{
+    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
+    let matchid = 86750 + a:n
+    " Clear existing matches, but don't worry if they don't exist.
+    silent! call matchdelete(matchid)
+    " Use VSetSearch code
+    let temp = @@
+    norm! gvy
+    let pattern = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+
+    call matchadd("InterestingWord" . a:n, pattern, 1, matchid)
+    let @@ = temp
+endfunction " }}}
 function! HiInterestingWord(n) " {{{
     " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
     let matchid = 86750 + a:n
@@ -320,9 +339,9 @@ function! HiInterestingWord(n) " {{{
     " Use VSetSearch code
     let temp = @@
     norm! gvy
-    let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
+    let pattern = '\<' . substitute(escape(@@, '\'), '\n', '\\n', 'g') . '\>'
 
-    call matchadd("InterestingWord" . a:n, @/, 1, matchid)
+    call matchadd("InterestingWord" . a:n, pattern, 1, matchid)
     let @@ = temp
 endfunction " }}}
 function! MatchDeleteInterestingWords() " {{{
@@ -423,20 +442,21 @@ set history=1000
 " }}} ========================================================================
 " Commands {{{1---------------------------------------------------------------
 
-command! Cls execute 'let @/=""'
-command! SaveWork execute 'mksession! $HOME\Work.vim'
-command! SaveSession execute 'mksession! $HOME\Session.vim'
-command! Changes execute 'CtrlPChange'
-command! Buffers execute 'CtrlPBuffer'
-
+command! -nargs=0 Cls execute 'let @/=""'
+command! -nargs=0 SaveWork execute 'mksession! $HOME\Work.vim'
+command! -nargs=0 SaveSession execute 'mksession! $HOME\Session.vim'
+command! -nargs=0 Changes execute 'CtrlPChange'
+command! -nargs=0 Buffers execute 'CtrlPBuffer'
+command! -nargs=0 FilePath execute 'echo expand("%:p")'
+" TODO: make this better
+command! -nargs=0 -range PrettyJSON execute "'<,'>!python -m json.tool"
 
 " }}} ========================================================================
 " Functions {{{1--------------------------------------------------------------
 
-" Highlight a column in csv text
-" :Csv 12   " highlight twelfth column
-" :Csv 0    " switch off highlight
-function! CSVH(colnr) " {{{
+function! CSVH(colnr)                  " {{{ Highlight a column in csv text
+    " :Csv 12   " highlight twelfth column
+    " :Csv 0    " switch off highlight
     if a:colnr > 1
         let n = a:colnr - 1
         execute 'match Keyword /^\([^,]*,\)\{'.n.'}\zs[^,]*/'
@@ -447,19 +467,17 @@ function! CSVH(colnr) " {{{
     else
         match
     endif
-endfunction " }}}
-command! -nargs=1 Csv :call CSVH(<args>)
+endfunction
 
-" Check if buffer is empty
-function! BufferIsEmpty() " {{{
+command! -nargs=1 Csv :call CSVH(<args>) " }}}
+function! BufferIsEmpty()              " {{{ Check if buffer is empty
     if line2byte(line('$')) <= 2
         return 1
     else
         return 0
     endif
 endfunction " }}}
-" Close all hidden buffers
-function! CloseHiddenBuffers() " {{{
+function! CloseHiddenBuffers()         " {{{ Close all hidden buffers
     let lastBuffer = bufnr('$')
     let currentBuffer = 1
     while currentBuffer <= lastBuffer
@@ -469,8 +487,7 @@ function! CloseHiddenBuffers() " {{{
         let currentBuffer = currentBuffer + 1
     endwhile
 endfunction " }}}
-" Wipeout all non-visible buffers
-function! Wipeout() " {{{
+function! Wipeout()                    " {{{ Wipeout all non-visible buffers
     " list of *all* buffer numbers
     let l:buffers = range(1, bufnr('$'))
 
@@ -502,8 +519,7 @@ function! Wipeout() " {{{
         execute 'tabnext' l:currentTab
     endtry
 endfunction " }}}
-" Close all [No Name] buffers
-function! CloseNoNameBuffers() " {{{
+function! CloseNoNameBuffers()         " {{{ Close all [No Name] buffers
     let lastBuffer = bufnr('$')
     let currentBuffer = 1
     while currentBuffer <= lastBuffer
@@ -513,34 +529,31 @@ function! CloseNoNameBuffers() " {{{
         let currentBuffer = currentBuffer + 1
     endwhile
 endfunction " }}}
-
-" If buffer modified, update any 'Last modified:' in the first 10 lines.
-" 'Last modified:' can have up to 10 characters before (they are retained).
-" Restores cursor and window position using save_cursor variable.
-function! LastModified() " {{{
-  if &modified
-    let save_cursor = getpos(".")
-    let n = min([10, line("$")])
-    keepjumps exe '1,' . n . 's#^\(.\{,10}Last modified: \).*#\1' .
-          \ strftime('%Y-%m-%d %H:%M:%S') . '#e'
-    call histdel('search', -1)
-    call setpos('.', save_cursor)
-  endif
+function! LastModified()               " {{{ Modify Last Modified timestamp
+    " If buffer modified, update any 'Last modified:' in the first 10 lines.
+    " 'Last modified:' can have up to 10 characters before (they are retained).
+    " Restores cursor and window position using save_cursor variable.
+    if &modified
+        let save_cursor = getpos(".")
+        let n = min([10, line("$")])
+        keepjumps exe '1,' . n . 's#^\(.\{,10}Last modified: \).*#\1' .
+                    \ strftime('%Y-%m-%d %H:%M:%S') . '#e'
+        call histdel('search', -1)
+        call setpos('.', save_cursor)
+    endif
 endfun " }}}
-
-" Toggle solarized background
-function! ToggleSolarized()
+function! ToggleSolarized()            " {{{ Toggle solarized background
     if !exists("g:solarized_style") || (g:solarized_style=="light")
         let g:solarized_style="dark"
-        colorscheme solarized
     else
         let g:solarized_style="light"
-        colorscheme solarized
     endif
+    let g:solarized_termcolors = 16
+    colorscheme solarized
 endfunction
 
-" format SQL using sqlformat.org
-function! SQLFormat() " {{{
+command! -nargs=0 SolarizedToggle call ToggleSolarized() " }}}
+function! SQLFormat()                  " {{{ format SQL using sqlformat.org
 '<,'>python << EOF
 import vim
 import urllib2, urllib, json
@@ -557,6 +570,48 @@ vim.current.range.append([line for line in lines if line != ''])
 vim.command('\'<,\'>d')
 EOF
 endfunction " }}}
+function! s:Pulse()                    " {{{ Pulse current line
+    let current_window = winnr()
+    windo set nocursorline
+    execute current_window . 'wincmd w'
+    setlocal cursorline
+
+    redir => old_hi
+        silent execute 'hi CursorLine'
+    redir END
+    let old_hi = split(old_hi, '\n')[0]
+    let old_hi = substitute(old_hi, 'xxx', '', '')
+
+    let steps = 9
+    let width = 1
+    let start = width
+    let end = steps * width
+    let color = 233
+
+    for i in range(start, end, width)
+        execute "hi CursorLine ctermbg=" . (color + i)
+        redraw
+        sleep 6m
+    endfor
+    for i in range(end, start, -1 * width)
+        execute "hi CursorLine ctermbg=" . (color + i)
+        redraw
+        sleep 6m
+    endfor
+
+    execute 'hi ' . old_hi
+endfunction
+
+command! -nargs=0 Pulse call s:Pulse() " }}}
+function! RangerChooser()                   " {{{ RangerChooser TODO: WIP
+    exec "silent !ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
+    if filereadable('/tmp/chosenfile')
+        exec 'edit ' . system('cat /tmp/chosenfile')
+        call system('rm /tmp/chosenfile')
+    endif
+    redraw!
+endfun
+command! -nargs=0 RangerChooser call RangerChooser() " }}}
 
 " }}} ========================================================================
 " Text Objects {{{1-----------------------------------------------------------
