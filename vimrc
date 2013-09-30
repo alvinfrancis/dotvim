@@ -39,7 +39,7 @@ else
     call vundle#rc()
 
     " Set font to Monaco (preferred font)
-    set guifont=Monaco:h11
+    set guifont=Menlo:h11
 
     if exists('+transparency')
         command! Tran0 execute 'set transparency=0'
@@ -107,7 +107,10 @@ filetype indent plugin on
 set encoding=utf-8
 set fileencoding=utf-8
 set termencoding=utf-8
+" set term=xterm-256color-italic
 syntax on
+" Text over the 500 col will not be syntax highlighted
+set synmaxcol=500
 set hidden
 set wildmenu
 set showcmd
@@ -119,8 +122,11 @@ set backspace=indent,eol,start
 set autoindent
 set ruler
 set linebreak
-let &showbreak = '+++ '
+let &showbreak = '  '
 " set linespace=-1
+set cursorline
+" Do not jump to start of line when switching buffers
+set nostartofline
 
 " By default, do not wrap text. It makes the display ugly more often than not.
 " If necessary, word wrap will be set manually
@@ -150,7 +156,7 @@ set tabstop=4
 " This determines the minimum number of lines that should be displayed at the
 " bottom/top when scrolling down/up. It is the number of lines the cursor is
 " offset from the end of the window.
-set scrolloff=10
+set scrolloff=999
 
 " Only unfold the highest level fold (helps in Vimwiki)
 set foldlevelstart=2
@@ -162,7 +168,13 @@ set foldlevelstart=2
 " Don't auto-indent comments.
 set fo-=c
 
-colorscheme molokai
+" Autoreload external changes made to files
+set autoread
+
+" color scheme
+set background=dark
+let g:solarized_termcolors = 16
+colorscheme solarized
 
 
 " }}} ========================================================================
