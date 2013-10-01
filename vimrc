@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-09-25 14:00:34
+" Last modified: 2013-10-01 13:55:09
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -55,40 +55,63 @@ endif
 
 " Use Vundle to manage plugins
 
-Bundle 'Align'
-Bundle 'Conque-Shell'
+Bundle 'vim-scripts/utl.vim'
+
+Bundle 'gre/play2vim'
+Bundle 'derekwyatt/vim-scala'
+"
+" Bundle 'jpalardy/vim-slime'
+Bundle 'epeli/slimux'
+Bundle 'vim-scripts/slimv.vim'
+Bundle 'airblade/vim-gitgutter'
+
+Bundle 'mattn/emmet-vim'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'gkz/vim-ls'
+
+" Bundle 'Yggdroot/indentLine'
+" let g:indentLine_loaded = 1
+
+Bundle 'vim-scripts/Solarized'
+Bundle 'vim-scripts/Align'
+Bundle 'oplatek/Conque-Shell'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'Shougo/neocomplcache.vim'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/vimproc.vim'
 Bundle 'Shougo/vimshell.vim'
-Bundle 'The-NERD-tree'
-Bundle 'ack.vim'
+
+Bundle 'Shougo/vimfiler.vim'
+
+Bundle 'vim-scripts/The-NERD-tree'
+Bundle 'mileszs/ack.vim'
 Bundle 'coderifous/textobj-word-column.vim'
-Bundle 'dbext.vim'
-Bundle 'gitv'
+Bundle 'vim-scripts/dbext.vim'
+Bundle 'gregsexton/gitv'
 Bundle 'gmarik/vundle'
 Bundle 'kien/ctrlp.vim'
 Bundle 'mattn/calendar-vim'
 Bundle 'michaeljsmith/vim-indent-object'
-Bundle 'scratch.vim'
+Bundle 'vim-scripts/scratch.vim'
 Bundle 'terryma/vim-multiple-cursors'
+Bundle 'tomtom/tcomment_vim'
 Bundle 'tpope/vim-abolish'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-sleuth'
 Bundle 'vimwiki/vimwiki'
 
 if has('python')
-    Bundle 'VOoM'
+    Bundle 'vim-scripts/VOoM'
     Bundle 'klen/python-mode'
     Bundle 'sjl/gundo.vim'
     Bundle 'SirVer/ultisnips'
 endif
 if executable('ctags')
-    Bundle 'taglist.vim'
-    Bundle 'Tagbar'
+    Bundle 'vim-scripts/taglist.vim'
+    Bundle 'vim-scripts/Tagbar'
 endif
 if executable('curl')
     Bundle 'mattn/webapi-vim'
