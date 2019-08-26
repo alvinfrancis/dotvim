@@ -57,7 +57,7 @@
 	url = git://github.com/Shougo/vimfiler.vim
 [submodule "bundle/The-NERD-tree"]
 	path = bundle/The-NERD-tree
-	url = git://github.com/The-NERD-tree
+	url = git://github.com/vim-scripts/The-NERD-tree
 [submodule "bundle/ack.vim"]
 	path = bundle/ack.vim
 	url = git://github.com/mileszs/ack.vim

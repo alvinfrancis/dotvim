@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2013-10-01 13:55:09
+" Last modified: 2019-08-27 02:33:04
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -62,7 +62,6 @@ Bundle 'derekwyatt/vim-scala'
 "
 " Bundle 'jpalardy/vim-slime'
 Bundle 'epeli/slimux'
-Bundle 'vim-scripts/slimv.vim'
 Bundle 'airblade/vim-gitgutter'
 
 Bundle 'mattn/emmet-vim'
@@ -162,6 +161,7 @@ set t_vb=
 set mouse=a
 set cmdheight=2
 set number
+set relativenumber
 set notimeout ttimeout ttimeoutlen=200
 
 " Number of terminal colors
@@ -199,6 +199,8 @@ set background=dark
 let g:solarized_termcolors = 16
 colorscheme solarized
 
+" No-op 
+nnoremap <S-k> <NOP>
 
 " }}} ========================================================================
 " Gui Options {{{1------------------------------------------------------------
@@ -274,7 +276,7 @@ nnoremap <leader>es :set buftype=nofile<CR>:set bufhidden=hide<CR>:setlocal nosw
 " Ex mode is used very rarely enough so as not to warrant its own key
 nnoremap Q K
 
-" Minimize chording 
+" Minimize chording
 nnoremap ; :
 nnoremap : ;
 vnoremap ; :
@@ -311,6 +313,9 @@ vnoremap - 5k
 
 " }}} ========================================================================
 " Search {{{1-----------------------------------------------------------------
+
+" Wrap search
+set wrapscan
 
 " Position cursor in middle when jumping to next search
 nnoremap n nzzzv
@@ -430,7 +435,7 @@ nnoremap <S-l> gt
 " nnoremap <F1> :bN<CR>
 " nnoremap <F2> :bn<CR>
 nnoremap <F9> :call CloseHiddenBuffers()<CR>
-nnoremap <leader>gb :ls<CR>:b 
+nnoremap <leader>gb :ls<CR>:b
 nnoremap <Left> :bN<CR>
 nnoremap <Right> :bn<CR>
 
@@ -626,7 +631,7 @@ function! s:Pulse()                    " {{{ Pulse current line
 endfunction
 
 command! -nargs=0 Pulse call s:Pulse() " }}}
-function! RangerChooser()                   " {{{ RangerChooser TODO: WIP
+function! RangerChooser()              " {{{ RangerChooser TODO: WIP
     exec "silent !ranger --choosefile=/tmp/chosenfile " . expand("%:p:h")
     if filereadable('/tmp/chosenfile')
         exec 'edit ' . system('cat /tmp/chosenfile')
@@ -635,6 +640,16 @@ function! RangerChooser()                   " {{{ RangerChooser TODO: WIP
     redraw!
 endfun
 command! -nargs=0 RangerChooser call RangerChooser() " }}}
+function! StripTrailingWS()            " {{{ Strip trailing whitespace
+  try
+    execute ":%s/\\s\\+$//g"
+    normal! 
+  catch /E486/
+    " Do nothing
+  endtry
+endfunction
+command! -nargs=0 StripTrailingWS call StripTrailingWS() " }}}
+
 
 " }}} ========================================================================
 " Text Objects {{{1-----------------------------------------------------------
@@ -654,6 +669,8 @@ vnoremap if :<C-U>silent! normal! [zjV]zk
 " }}} ---------------------------------
 " Number Object {{{2---------------------
 " TODO: Work-In-Progress
+vnoremap i# <ESC>/\d*\%#\d*<CR>v/\d*\%#\d*/e<CR>
+omap i# :normal vi#<CR>
 " vnoremap in :<C-U>silent! normal! ?[^0-9\.]wV/[^0-9\.]b
 " omap af :normal Vaf<CR><C-O><C-O>
 " vnoremap if :<C-U>silent! normal! [zjV]zk
@@ -751,21 +768,39 @@ augroup END
 " vimwiki {{{2-------------------------
 augroup ft_wiki
     autocmd!
-    autocmd FileType vimwiki setlocal textwidth=80
+    autocmd FileType vimwiki setlocal textwidth=80 syntax=mkd
 augroup END
 " }}} ---------------------------------
 " ft_coffee {{{2-----------------------
 augroup ft_coffee
     autocmd!
-    autocmd FileType coffee setlocal tabstop=2 shiftwidth=2 
+    autocmd FileType coffee setlocal tabstop=2 shiftwidth=2
     autocmd FileType coffee nnoremap <buffer><F2> :CoffeeMake<CR>:redraw!<CR>
 augroup END
 " }}} ---------------------------------
 " ft_livescript {{{2-------------------
 augroup ft_livescript
     autocmd!
-    autocmd FileType ls setlocal tabstop=2 shiftwidth=2
+    autocmd FileType ls setlocal tabstop=2 shiftwidth=2 foldmethod=indent
     autocmd FileType ls nnoremap <buffer><F2> :LiveScriptMake<CR>:redraw!<CR>
+augroup END
+" }}} ---------------------------------
+" ft_crontab {{{2----------------------
+augroup ft_crontab
+    autocmd!
+    autocmd Bufread crontab.* setlocal backupcopy=yes
+augroup END
+" }}} ---------------------------------
+" ft_cs {{{2---------------------------
+augroup ft_cs
+    autocmd!
+    autocmd FileType cs setlocal foldmethod=marker foldmarker={,}
+augroup END
+" }}} ---------------------------------
+" ft_calendar {{{2---------------------
+augroup ft_cs
+    autocmd!
+    autocmd FileType calendar setlocal nonumber norelativenumber
 augroup END
 " }}} ---------------------------------
 
@@ -804,10 +839,10 @@ function! MyStatusline(current) " {{{
     " let sline['n'] = '%(%(%#StatusLine1# %{&paste ? "PASTE" : ""} %)%#StatusLine2#%)%(%(%#StatusLine3# %{GetMode()} %)%#StatusLine4#%)%(%(%#StatusLine5# %{GetBranch("BR:")} %)%#StatusLine5#│%)%( %(%#StatusLine6#%{&readonly ? "RO" : ""} %)%(%#StatusLine7#%{GetFilepath()}%)%(%#StatusLine8#%t %)%(%#StatusLine6#%M %)%(%#StatusLine6#%H%W %)%#StatusLine9#%)%<%#StatusLine10#%=%(%#StatusLine11#%(%#StatusLine12# %{&fileformat} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{(&fenc == "" ? &enc : &fenc)} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{strlen(&ft) ? &ft : "no ft"} %)%)%(%#StatusLine9#%(%#StatusLine5# %3p%% %)%)%(%#StatusLine7#%(%#StatusLine13# LN %3l%)%(%#StatusLine14#:%-2v%) %)'
     " let sline['i'] = '%(%(%#StatusLine1# %{&paste ? "PASTE" : ""} %)%#StatusLine15#%)%(%(%#StatusLine16# %{GetMode()} %)%#StatusLine17#%)%(%(%#StatusLine18# %{GetBranch("BR:")} %)%#StatusLine18#│%)%( %(%#StatusLine19#%{&readonly ? "RO" : ""} %)%(%#StatusLine18#%{GetFilepath()}%)%(%#StatusLine20#%t %)%(%#StatusLine19#%M %)%(%#StatusLine19#%H%W %)%#StatusLine21#%)%<%#StatusLine22#%=%(%#StatusLine23#%(%#StatusLine24# %{&fileformat} %)%)%(%#StatusLine24#│%(%#StatusLine24# %{(&fenc == "" ? &enc : &fenc)} %)%)%(%#StatusLine24#│%(%#StatusLine24# %{strlen(&ft) ? &ft : "no ft"} %)%)%(%#StatusLine21#%(%#StatusLine18# %3p%% %)%)%(%#StatusLine18#%(%#StatusLine25# LN %3l%)%(%#StatusLine26#:%-2v%) %)'
     " let sline['N'] = '%(%(%#StatusLine27# %{GetBranch("BR:")} %)%#StatusLine28#%)%( %(%#StatusLine29#%{&readonly ? "RO" : ""} %)%(%#StatusLine30#%{GetFilepath()}%)%(%#StatusLine31#%t %)%(%#StatusLine29#%M %)%(%#StatusLine29#%H%W %)%#StatusLine32#%)%<%#StatusLine33#%=%(%#StatusLine28#%(%#StatusLine27# %3p%% %)%)%(%#StatusLine34#│%(%#StatusLine34# LN %3l%)%(%#StatusLine35#:%-2v%) %)'
-    " let sline['v'] = '%(%(%#StatusLine1# %{&paste ? "PASTE" : ""} %)%#StatusLine36#%)%(%(%#StatusLine37# %{GetMode()} %)%#StatusLine38#%)%(%(%#StatusLine5# %{GetBranch("BR:")} %)%#StatusLine5#│%)%( %(%#StatusLine6#%{&readonly ? "RO" : ""} %)%(%#StatusLine7#%{GetFilepath()}%)%(%#StatusLine8#%t %)%(%#StatusLine6#%M %)%(%#StatusLine6#%H%W %)%#StatusLine9#%)%<%#StatusLine10#%=%(%#StatusLine11#%(%#StatusLine12# %{&fileformat} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{(&fenc == "" ? &enc : &fenc)} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{strlen(&ft) ? &ft : "no ft"} %)%)%(%#StatusLine9#%(%#StatusLine5# %3p%% %)%)%(%#StatusLine7#%(%#StatusLine13# LN %3l%)%(%#StatusLine14#:%-2v%) %)' 
+    " let sline['v'] = '%(%(%#StatusLine1# %{&paste ? "PASTE" : ""} %)%#StatusLine36#%)%(%(%#StatusLine37# %{GetMode()} %)%#StatusLine38#%)%(%(%#StatusLine5# %{GetBranch("BR:")} %)%#StatusLine5#│%)%( %(%#StatusLine6#%{&readonly ? "RO" : ""} %)%(%#StatusLine7#%{GetFilepath()}%)%(%#StatusLine8#%t %)%(%#StatusLine6#%M %)%(%#StatusLine6#%H%W %)%#StatusLine9#%)%<%#StatusLine10#%=%(%#StatusLine11#%(%#StatusLine12# %{&fileformat} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{(&fenc == "" ? &enc : &fenc)} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{strlen(&ft) ? &ft : "no ft"} %)%)%(%#StatusLine9#%(%#StatusLine5# %3p%% %)%)%(%#StatusLine7#%(%#StatusLine13# LN %3l%)%(%#StatusLine14#:%-2v%) %)'
     " let sline['s'] = '%(%(%#StatusLine1# %{&paste ? "PASTE" : ""} %)%#StatusLine39#%)%(%(%#StatusLine40# %{GetMode()} %)%#StatusLine41#%)%(%(%#StatusLine5# %{GetBranch("BR:")} %)%#StatusLine5#│%)%( %(%#StatusLine6#%{&readonly ? "RO" : ""} %)%(%#StatusLine7#%{GetFilepath()}%)%(%#StatusLine8#%t %)%(%#StatusLine6#%M %)%(%#StatusLine6#%H%W %)%#StatusLine9#%)%<%#StatusLine10#%=%(%#StatusLine11#%(%#StatusLine12# %{&fileformat} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{(&fenc == "" ? &enc : &fenc)} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{strlen(&ft) ? &ft : "no ft"} %)%)%(%#StatusLine9#%(%#StatusLine5# %3p%% %)%)%(%#StatusLine7#%(%#StatusLine13# LN %3l%)%(%#StatusLine14#:%-2v%) %)'
     " let sline['r'] = '%(%(%#StatusLine1# %{&paste ? "PASTE" : ""} %)%#StatusLine1#│%)%(%(%#StatusLine1# %{GetMode()} %)%#StatusLine42#%)%(%(%#StatusLine5# %{GetBranch("BR:")} %)%#StatusLine5#│%)%( %(%#StatusLine6#%{&readonly ? "RO" : ""} %)%(%#StatusLine7#%{GetFilepath()}%)%(%#StatusLine8#%t %)%(%#StatusLine6#%M %)%(%#StatusLine6#%H%W %)%#StatusLine9#%)%<%#StatusLine10#%=%(%#StatusLine11#%(%#StatusLine12# %{&fileformat} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{(&fenc == "" ? &enc : &fenc)} %)%)%(%#StatusLine12#│%(%#StatusLine12# %{strlen(&ft) ? &ft : "no ft"} %)%)%(%#StatusLine9#%(%#StatusLine5# %3p%% %)%)%(%#StatusLine7#%(%#StatusLine13# LN %3l%)%(%#StatusLine14#:%-2v%) %)'
- 
+
     let mode = mode()
     if ! a:current
         let mode = 'N' " Normal (non-current)
@@ -823,7 +858,7 @@ function! MyStatusline(current) " {{{
         " Fallback to normal mode
         let mode = 'n' " Normal (current)
     endif
- 
+
     " return sline[mode]
     return g:MyStatusLine[mode]
 endfunction " }}}
@@ -1232,18 +1267,18 @@ endfunction " }}}
             autocmd BufEnter,WinEnter,FileType,BufUnload,CmdWinEnter *
                         \ call setwinvar(winnr(), '&statusline',
                         \                '%!MyStatusline(1)')
-            autocmd BufLeave,WinLeave,CmdWinLeave * 
+            autocmd BufLeave,WinLeave,CmdWinLeave *
                         \ call setwinvar(winnr(), '&statusline',
                         \ '%!MyStatusline(0)')
         augroup END
- 
+
         let curwindow = winnr()
         for window in range(1, winnr('$'))
             call setwinvar(winnr(), '&statusline',
                         \  '%!MyStatusline('. (window == curwindow) .')')
         endfor
     endfunction
- 
+
     augroup StatuslineStartup
         autocmd!
         autocmd VimEnter * call s:Startup()
@@ -1300,7 +1335,7 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cmd = 'CtrlPMixed'
 
 " Mapping for CtrlPMRU
-nnoremap <leader><C-p> :CtrlPMRU<CR>
+nnoremap <leader><C-p> :CtrlP<CR>
 
 " Mapping for CtrlPBufTagAll
 nnoremap <leader><leader><C-p> :CtrlPBufTagAll<CR>
@@ -1478,6 +1513,8 @@ augroup END
 function! s:unite_settings() " {{{
 
     nmap <buffer> <ESC> <Plug>(unite_exit)
+    nmap <buffer> <C-c> <Plug>(unite_exit)
+    imap <buffer> <C-c> <Plug>(unite_exit)
     imap <buffer> <ESC> <Plug>(unite_exit)
     imap <buffer> <c-j> <Plug>(unite_select_next_line)
     imap <buffer> <c-k> <Plug>(unite_select_previous_line)
@@ -1494,14 +1531,14 @@ function! s:unite_settings() " {{{
     else
         nnoremap <silent><buffer><expr> r     unite#do_action('rename')
     endif
-  
+
     nnoremap <silent><buffer><expr> cd     unite#do_action('lcd')
-  
+
     " Using Ctrl-\ to trigger outline, so close it using the same keystroke
     if unite.buffer_name =~# '^outline'
         imap <buffer> <C-\> <Plug>(unite_exit)
     endif
-  
+
     " Using Ctrl-/ to trigger line, close it using same keystroke
     if unite.buffer_name =~# '^search_file'
         imap <buffer> <C-_> <Plug>(unite_exit)
@@ -1536,11 +1573,10 @@ let g:unite_source_file_mru_limit = 1000
 let g:unite_source_file_mru_filename_format = ':~:.'
 let g:unite_source_file_mru_time_format = ''
 
-" For ack.
-if executable('ack-grep')
-    let g:unite_source_grep_command = 'ack-grep'
-    " Match whole word only. This might/might not be a good idea
-    let g:unite_source_grep_default_opts = '--no-heading --no-color -a -w'
+" For ag and ack.
+if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nocolor --noheading -i'
     let g:unite_source_grep_recursive_opt = ''
 elseif executable('ack')
     let g:unite_source_grep_command = 'ack'
