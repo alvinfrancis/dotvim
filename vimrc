@@ -1,6 +1,6 @@
 " .vimrc
 " Author: Alvin Francis Dumalus <alvin.francis.dumalus@gmail.com>
-" Last modified: 2019-08-27 02:33:04
+" Last modified: 2019-09-08 21:07:56
 " Description: Definitely still a work in progress. A lot of what's on here
 " comes from (or takes ideas from) others. I'll try to comment as much as I
 " can.
@@ -75,7 +75,6 @@ Bundle 'vim-scripts/Solarized'
 Bundle 'vim-scripts/Align'
 Bundle 'oplatek/Conque-Shell'
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'Lokaltog/vim-powerline'
 Bundle 'Shougo/neocomplcache.vim'
 Bundle 'Shougo/unite.vim'
 Bundle 'Shougo/vimproc.vim'
